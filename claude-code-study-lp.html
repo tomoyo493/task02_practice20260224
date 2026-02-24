@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Code 勉強会 — AIでコーディングを革命しよう</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap');
+
+    :root {
+      --sun-yellow: #FFD000;
+      --fire-orange: #FF6B2B;
+      --passion-red: #E8243C;
+      --jungle-green: #00A86B;
+      --deep-teal: #006D5B;
+      --night-navy: #1A1A2E;
+      --warm-cream: #FFF8EC;
+      --text-dark: #1A1A2E;
+      --text-light: #FFFFFF;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      color: var(--text-dark);
+      background: var(--warm-cream);
+      overflow-x: hidden;
+    }
+
+    /* ===== Geometric Pattern Background ===== */
+    .geo-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.04;
+      background-image:
+        repeating-linear-gradient(45deg, var(--passion-red) 0, var(--passion-red) 1px, transparent 1px, transparent 40px),
+        repeating-linear-gradient(-45deg, var(--fire-orange) 0, var(--fire-orange) 1px, transparent 1px, transparent 40px);
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: linear-gradient(135deg, var(--fire-orange) 0%, var(--passion-red) 40%, var(--deep-teal) 100%);
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background:
+        radial-gradient(circle at 20% 50%, rgba(255, 208, 0, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 168, 107, 0.2) 0%, transparent 40%),
+        radial-gradient(circle at 60% 80%, rgba(255, 107, 43, 0.25) 0%, transparent 45%);
+      animation: heroFloat 20s ease-in-out infinite;
+    }
+
+    @keyframes heroFloat {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(30px, -30px) rotate(1deg); }
+      66% { transform: translate(-20px, 20px) rotate(-1deg); }
+    }
+
+    /* Decorative triangles */
+    .hero-deco {
+      position: absolute;
+      width: 0;
+      height: 0;
+      opacity: 0.15;
+    }
+    .hero-deco-1 {
+      top: 10%;
+      left: 5%;
+      border-left: 80px solid transparent;
+      border-right: 80px solid transparent;
+      border-bottom: 140px solid var(--sun-yellow);
+      animation: float 6s ease-in-out infinite;
+    }
+    .hero-deco-2 {
+      bottom: 15%;
+      right: 8%;
+      border-left: 60px solid transparent;
+      border-right: 60px solid transparent;
+      border-top: 100px solid var(--jungle-green);
+      animation: float 8s ease-in-out infinite reverse;
+    }
+    .hero-deco-3 {
+      top: 60%;
+      left: 80%;
+      border-left: 40px solid transparent;
+      border-right: 40px solid transparent;
+      border-bottom: 70px solid var(--sun-yellow);
+      animation: float 5s ease-in-out infinite 1s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      padding: 2rem;
+      max-width: 900px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--sun-yellow);
+      color: var(--text-dark);
+      font-weight: 900;
+      padding: 0.5rem 1.5rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.5rem;
+      transform: rotate(-2deg);
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      font-weight: 900;
+      color: var(--text-light);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+    }
+
+    .hero h1 span {
+      display: inline-block;
+      background: var(--sun-yellow);
+      color: var(--text-dark);
+      padding: 0 0.3em;
+      transform: rotate(-1deg);
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 2.5rem;
+      line-height: 1.8;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-meta-item {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 12px;
+      padding: 0.8rem 1.5rem;
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .hero-meta-item .label {
+      font-size: 0.75rem;
+      font-weight: 400;
+      opacity: 0.8;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background: var(--sun-yellow);
+      color: var(--text-dark);
+      font-size: 1.2rem;
+      font-weight: 900;
+      padding: 1rem 3rem;
+      border-radius: 60px;
+      text-decoration: none;
+      box-shadow: 6px 6px 0 rgba(0,0,0,0.25);
+      transition: all 0.2s;
+      border: 3px solid var(--text-dark);
+    }
+
+    .btn-primary:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.3);
+    }
+
+    .btn-primary:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.25);
+    }
+
+    /* ===== Section Common ===== */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 5rem 1.5rem;
+    }
+
+    .section-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 900;
+      text-align: center;
+      margin-bottom: 1rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title-wrap {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: var(--sun-yellow);
+      border-radius: 4px;
+      z-index: -1;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      font-size: 1rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+
+    /* ===== About ===== */
+    .about {
+      background: white;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .about-text p {
+      font-size: 1.05rem;
+      line-height: 2;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-visual {
+      background: linear-gradient(135deg, var(--night-navy), #2d2d4e);
+      border-radius: 20px;
+      padding: 2rem;
+      color: var(--text-light);
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.8;
+      box-shadow: 8px 8px 0 var(--fire-orange);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-visual::before {
+      content: '●  ●  ●';
+      display: block;
+      color: var(--fire-orange);
+      margin-bottom: 1rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+    }
+
+    .code-comment { color: #6a9955; }
+    .code-keyword { color: #c586c0; }
+    .code-string { color: #ce9178; }
+    .code-func { color: #dcdcaa; }
+    .code-prompt { color: var(--sun-yellow); }
+
+    /* ===== Learn ===== */
+    .learn {
+      background: var(--warm-cream);
+    }
+
+    .learn-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .learn-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      border: 3px solid transparent;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .learn-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+    }
+
+    .learn-card:nth-child(1)::before { background: var(--passion-red); }
+    .learn-card:nth-child(2)::before { background: var(--fire-orange); }
+    .learn-card:nth-child(3)::before { background: var(--sun-yellow); }
+    .learn-card:nth-child(4)::before { background: var(--jungle-green); }
+    .learn-card:nth-child(5)::before { background: var(--deep-teal); }
+    .learn-card:nth-child(6)::before { background: var(--passion-red); }
+
+    .learn-card:hover {
+      border-color: var(--fire-orange);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .learn-card-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: var(--night-navy);
+      color: var(--sun-yellow);
+      font-weight: 900;
+      border-radius: 50%;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .learn-card h3 {
+      font-size: 1.15rem;
+      font-weight: 900;
+      margin-bottom: 0.7rem;
+    }
+
+    .learn-card p {
+      font-size: 0.9rem;
+      color: #555;
+      line-height: 1.7;
+    }
+
+    /* ===== Target ===== */
+    .target {
+      background: linear-gradient(135deg, var(--deep-teal), var(--jungle-green));
+      color: white;
+    }
+
+    .target-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .target-list li {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 16px;
+      padding: 1.5rem;
+      font-size: 1rem;
+      line-height: 1.7;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+
+    .target-list li::before {
+      content: '▶';
+      color: var(--sun-yellow);
+      font-size: 0.8rem;
+      margin-top: 0.3rem;
+      flex-shrink: 0;
+    }
+
+    .target .section-title::after {
+      background: var(--sun-yellow);
+    }
+
+    /* ===== Timeline ===== */
+    .timeline {
+      background: white;
+    }
+
+    .tl-container {
+      position: relative;
+      padding-left: 3rem;
+    }
+
+    .tl-container::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(to bottom, var(--fire-orange), var(--passion-red), var(--deep-teal));
+      border-radius: 2px;
+    }
+
+    .tl-item {
+      position: relative;
+      margin-bottom: 2.5rem;
+    }
+
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -2.55rem;
+      top: 0.4rem;
+      width: 16px;
+      height: 16px;
+      background: var(--fire-orange);
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px var(--fire-orange);
+    }
+
+    .tl-time {
+      display: inline-block;
+      background: var(--night-navy);
+      color: var(--sun-yellow);
+      font-weight: 700;
+      padding: 0.3rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .tl-item h3 {
+      font-size: 1.15rem;
+      font-weight: 900;
+      margin-bottom: 0.3rem;
+    }
+
+    .tl-item p {
+      font-size: 0.9rem;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    /* ===== Event Info ===== */
+    .event-info {
+      background: var(--warm-cream);
+    }
+
+    .info-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    .info-table tr {
+      border-bottom: 1px solid #eee;
+    }
+
+    .info-table tr:last-child {
+      border-bottom: none;
+    }
+
+    .info-table th {
+      background: var(--night-navy);
+      color: var(--sun-yellow);
+      text-align: left;
+      padding: 1rem 1.5rem;
+      font-weight: 700;
+      width: 160px;
+      font-size: 0.95rem;
+      vertical-align: top;
+    }
+
+    .info-table td {
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    .price-highlight {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--passion-red);
+    }
+
+    .price-note {
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    /* ===== Form ===== */
+    .form-section {
+      background: linear-gradient(135deg, var(--night-navy), #2d2d4e);
+      color: white;
+    }
+
+    .form-section .section-title {
+      color: white;
+    }
+
+    .form-section .section-title::after {
+      background: var(--fire-orange);
+    }
+
+    .form-section .section-subtitle {
+      color: rgba(255,255,255,0.7);
+    }
+
+    .form-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 2.5rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .form-group label .required {
+      background: var(--passion-red);
+      color: white;
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      margin-left: 0.5rem;
+      font-weight: 400;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.08);
+      color: white;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: rgba(255,255,255,0.4);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--sun-yellow);
+      background: rgba(255,255,255,0.12);
+    }
+
+    .form-group select option {
+      background: var(--night-navy);
+      color: white;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 1.2rem;
+      background: var(--sun-yellow);
+      color: var(--text-dark);
+      font-size: 1.2rem;
+      font-weight: 900;
+      border: 3px solid var(--text-dark);
+      border-radius: 60px;
+      cursor: pointer;
+      box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-submit:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.35);
+    }
+
+    .btn-submit:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+    }
+
+    /* ===== FAQ ===== */
+    .faq {
+      background: white;
+    }
+
+    .faq-list {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      border-bottom: 2px solid #eee;
+      padding: 1.5rem 0;
+    }
+
+    .faq-q {
+      font-weight: 900;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .faq-q::before {
+      content: 'Q';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      background: var(--fire-orange);
+      color: white;
+      border-radius: 50%;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .faq-a {
+      margin-top: 0.8rem;
+      padding-left: 2.8rem;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: #555;
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      background: var(--night-navy);
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    footer a {
+      color: var(--sun-yellow);
+      text-decoration: none;
+    }
+
+    /* ===== Stripe Divider ===== */
+    .stripe-divider {
+      height: 8px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--passion-red) 0,
+        var(--passion-red) 20%,
+        var(--fire-orange) 20%,
+        var(--fire-orange) 40%,
+        var(--sun-yellow) 40%,
+        var(--sun-yellow) 60%,
+        var(--jungle-green) 60%,
+        var(--jungle-green) 80%,
+        var(--deep-teal) 80%,
+        var(--deep-teal) 100%
+      );
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-meta {
+        flex-direction: column;
+        align-items: center;
+      }
+      .info-table th {
+        width: 100px;
+        font-size: 0.85rem;
+        padding: 0.8rem 1rem;
+      }
+      .info-table td {
+        padding: 0.8rem 1rem;
+      }
+      .tl-container {
+        padding-left: 2.5rem;
+      }
+      .form-container {
+        padding: 1.5rem;
+      }
+    }
+
+    /* ===== Scroll Animations ===== */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<div class="geo-pattern"></div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-deco hero-deco-1"></div>
+  <div class="hero-deco hero-deco-2"></div>
+  <div class="hero-deco hero-deco-3"></div>
+  <div class="hero-content">
+    <div class="hero-badge">HANDS-ON WORKSHOP</div>
+    <h1><span>Claude Code</span><br>勉強会</h1>
+    <p class="hero-sub">
+      AIがあなたのコーディングパートナーになる時代。<br>
+      初心者でも大丈夫。ゼロから体験して、未来の開発を手に入れよう。
+    </p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="label">DATE</span>
+        2026年3月（日程調整中）
+      </div>
+      <div class="hero-meta-item">
+        <span class="label">FEE（モニター特別価格）</span>
+        ¥3,000
+      </div>
+      <div class="hero-meta-item">
+        <span class="label">LEVEL</span>
+        初心者歓迎
+      </div>
+    </div>
+    <a href="#apply" class="btn-primary">今すぐ申し込む →</a>
+  </div>
+</section>
+
+<div class="stripe-divider"></div>
+
+<!-- ===== ABOUT ===== -->
+<section class="about">
+  <div class="section-inner">
+    <div class="section-title-wrap fade-up">
+      <span class="section-title">Claude Codeとは？</span>
+      <p class="section-subtitle">ターミナルで動くAIコーディングアシスタント</p>
+    </div>
+    <div class="about-grid fade-up">
+      <div class="about-text">
+        <p>
+          <strong>Claude Code</strong>は、Anthropic社が開発したAIコーディングツールです。
+          ターミナル上で自然言語の指示を出すだけで、コードの生成・修正・リファクタリング・デバッグまでAIが一緒にやってくれます。
+        </p>
+        <p>
+          「プログラミングは難しそう…」と思っていた方も、Claude Codeを使えば
+          <strong>日本語で指示するだけ</strong>でコードが書ける時代に。
+          この勉強会で、その威力を体感してみませんか？
+        </p>
+      </div>
+      <div class="about-visual">
+        <span class="code-comment">// Claude Codeに指示を出すだけ</span><br>
+        <br>
+        <span class="code-prompt">あなた &gt;</span> ユーザー登録フォームを<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;バリデーション付きで作って<br>
+        <br>
+        <span class="code-prompt">Claude &gt;</span> 了解！フォームを作成します。<br>
+        &nbsp;&nbsp;<span class="code-keyword">const</span> <span class="code-func">validateForm</span> = (data) =&gt; {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> (!data.email.includes(<span class="code-string">'@'</span>))<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> { error: <span class="code-string">'メール形式不正'</span> }<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;...<br>
+        &nbsp;&nbsp;}<br>
+        <br>
+        <span class="code-comment">✓ ファイルを作成しました</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LEARN ===== -->
+<section class="learn">
+  <div class="section-inner">
+    <div class="section-title-wrap fade-up">
+      <span class="section-title">学べること</span>
+      <p class="section-subtitle">ハンズオン形式で実践的に学びます</p>
+    </div>
+    <div class="learn-cards">
+      <div class="learn-card fade-up">
+        <div class="learn-card-num">1</div>
+        <h3>セットアップ</h3>
+        <p>Claude Codeのインストールから初期設定まで、手を動かしながら一緒に進めます。</p>
+      </div>
+      <div class="learn-card fade-up">
+        <div class="learn-card-num">2</div>
+        <h3>基本操作</h3>
+        <p>ファイルの読み書き、コード生成、Git操作など、日常的に使う基本コマンドをマスター。</p>
+      </div>
+      <div class="learn-card fade-up">
+        <div class="learn-card-num">3</div>
+        <h3>プロンプト設計</h3>
+        <p>AIに的確な指示を出す技術。良いプロンプトと悪いプロンプトの違いを体感します。</p>
+      </div>
+      <div class="learn-card fade-up">
+        <div class="learn-card-num">4</div>
+        <h3>実践ハンズオン</h3>
+        <p>実際にWebアプリの一部をClaude Codeで構築。コーディング速度の変化を実感。</p>
+      </div>
+      <div class="learn-card fade-up">
+        <div class="learn-card-num">5</div>
+        <h3>CLAUDE.md活用術</h3>
+        <p>プロジェクト固有のルールをAIに教える設定ファイルの書き方を学びます。</p>
+      </div>
+      <div class="learn-card fade-up">
+        <div class="learn-card-num">6</div>
+        <h3>Tips & 質疑応答</h3>
+        <p>現場で使える小技やトラブル対処法を共有。疑問点はその場で解消します。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stripe-divider"></div>
+
+<!-- ===== TARGET ===== -->
+<section class="target">
+  <div class="section-inner">
+    <div class="section-title-wrap fade-up">
+      <span class="section-title">こんな人におすすめ</span>
+    </div>
+    <ul class="target-list fade-up">
+      <li>プログラミングを始めたばかりで、効率よく学習したい方</li>
+      <li>AI時代の開発スタイルに興味があるけど、何から始めればいいかわからない方</li>
+      <li>GitHub Copilotは聞いたことあるけど、Claude Codeは初めてという方</li>
+      <li>ターミナル操作に苦手意識がある方（丁寧にサポートします！）</li>
+      <li>個人開発やサイドプロジェクトの生産性を爆上げしたい方</li>
+      <li>AIツールを実際にハンズオンで試してみたい方</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== TIMELINE ===== -->
+<section class="timeline">
+  <div class="section-inner">
+    <div class="section-title-wrap fade-up">
+      <span class="section-title">タイムテーブル</span>
+      <p class="section-subtitle">約3時間のプログラム（休憩含む）</p>
+    </div>
+    <div class="tl-container fade-up">
+      <div class="tl-item">
+        <div class="tl-time">13:00 - 13:15</div>
+        <h3>オープニング・自己紹介</h3>
+        <p>アイスブレイクと勉強会の流れを説明します。</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">13:15 - 13:45</div>
+        <h3>Claude Code概要 & セットアップ</h3>
+        <p>Claude Codeとは何か？を解説し、全員で環境構築を行います。</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">13:45 - 14:30</div>
+        <h3>基本操作 & プロンプト設計</h3>
+        <p>基本コマンドを一通り試し、効果的なプロンプトの書き方を学びます。</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">14:30 - 14:45</div>
+        <h3>休憩</h3>
+        <p>リフレッシュタイム。質問・交流もどうぞ。</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">14:45 - 15:30</div>
+        <h3>実践ハンズオン</h3>
+        <p>Claude Codeを使って実際にミニアプリを構築するワークショップ。</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">15:30 - 16:00</div>
+        <h3>Tips共有 & 質疑応答 & クロージング</h3>
+        <p>便利なTipsを紹介し、疑問をその場で解消。次のステップもご案内。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stripe-divider"></div>
+
+<!-- ===== EVENT INFO ===== -->
+<section class="event-info">
+  <div class="section-inner">
+    <div class="section-title-wrap fade-up">
+      <span class="section-title">開催概要</span>
+    </div>
+    <table class="info-table fade-up">
+      <tr>
+        <th>イベント名</th>
+        <td>Claude Code 勉強会 — AIでコーディングを革命しよう</td>
+      </tr>
+      <tr>
+        <th>日時</th>
+        <td>2026年3月（日程調整中）13:00〜16:00</td>
+      </tr>
+      <tr>
+        <th>会場</th>
+        <td>会場調整中（東京都内を予定）<br><span class="price-note">※確定次第、お申込者にご案内します</span></td>
+      </tr>
+      <tr>
+        <th>参加費</th>
+        <td><span class="price-highlight">¥3,000</span><span class="price-note">（税込・モニター特別価格）</span><br><span class="price-note">※通常価格は別途設定予定</span></td>
+      </tr>
+      <tr>
+        <th>定員</th>
+        <td>先着4名（少人数限定）</td>
+      </tr>
+      <tr>
+        <th>持ち物</th>
+        <td>ノートPC（Mac / Windows / Linux）<br><span class="price-note">※事前にNode.jsのインストールをお願いします</span></td>
+      </tr>
+      <tr>
+        <th>主催</th>
+        <td>Tomoyo Nambu</td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="faq">
+  <div class="section-inner">
+    <div class="section-title-wrap fade-up">
+      <span class="section-title">よくある質問</span>
+    </div>
+    <div class="faq-list fade-up">
+      <div class="faq-item">
+        <div class="faq-q">プログラミング未経験でも参加できますか？</div>
+        <div class="faq-a">はい、大歓迎です！基本的なPC操作ができれば問題ありません。丁寧にサポートしますのでご安心ください。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Claude Codeのアカウントは事前に必要ですか？</div>
+        <div class="faq-a">Anthropicのアカウントが必要です。事前にご登録いただくとスムーズです。申込後に詳しい準備手順をご案内します。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Windowsでも参加できますか？</div>
+        <div class="faq-a">もちろんです！Windows、Mac、Linuxいずれでも参加可能です。Windows環境でのセットアップも当日サポートします。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Claude Codeの利用料金はかかりますか？</div>
+        <div class="faq-a">Claude CodeはAnthropicのAPIまたはMaxプランで利用できます。詳細は申込後にご案内しますが、当日のハンズオンで使う分は少額です。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">キャンセルはできますか？</div>
+        <div class="faq-a">開催3日前まではキャンセル・全額返金が可能です。それ以降のキャンセルについてはお問い合わせください。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stripe-divider"></div>
+
+<!-- ===== APPLY FORM ===== -->
+<section class="form-section" id="apply">
+  <div class="section-inner">
+    <div class="section-title-wrap fade-up">
+      <span class="section-title">参加申し込み</span>
+      <p class="section-subtitle">下記フォームに必要事項をご入力ください</p>
+    </div>
+    <div class="form-container fade-up">
+      <form id="applyForm" onsubmit="handleSubmit(event)">
+        <div class="form-group">
+          <label>お名前 <span class="required">必須</span></label>
+          <input type="text" name="name" placeholder="山田 太郎" required>
+        </div>
+        <div class="form-group">
+          <label>メールアドレス <span class="required">必須</span></label>
+          <input type="email" name="email" placeholder="example@email.com" required>
+        </div>
+        <div class="form-group">
+          <label>プログラミング経験 <span class="required">必須</span></label>
+          <select name="experience" required>
+            <option value="" disabled selected>選択してください</option>
+            <option value="none">未経験</option>
+            <option value="beginner">学習中（〜1年）</option>
+            <option value="intermediate">実務経験あり（1〜3年）</option>
+            <option value="advanced">実務経験あり（3年以上）</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>使用OS <span class="required">必須</span></label>
+          <select name="os" required>
+            <option value="" disabled selected>選択してください</option>
+            <option value="mac">macOS</option>
+            <option value="windows">Windows</option>
+            <option value="linux">Linux</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>勉強会で特に知りたいこと</label>
+          <textarea name="message" rows="3" placeholder="聞いてみたいこと、期待していることなど（任意）"></textarea>
+        </div>
+        <button type="submit" class="btn-submit">申し込む！</button>
+      </form>
+      <div id="formResult" style="display:none; text-align:center; margin-top:1.5rem; padding:1.5rem; background:rgba(0,168,107,0.2); border-radius:12px; border:1px solid rgba(0,168,107,0.4);">
+        <p style="font-size:1.3rem; font-weight:900; margin-bottom:0.5rem;">お申し込みありがとうございます！</p>
+        <p style="font-size:0.9rem; opacity:0.8;">確認メールをお送りしますので、ご確認ください。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <p>&copy; 2026 Tomoyo Nambu. All Rights Reserved.</p>
+</footer>
+
+<script>
+  // Scroll Animation
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Form Submit (demo)
+  function handleSubmit(e) {
+    e.preventDefault();
+    document.getElementById('applyForm').style.display = 'none';
+    document.getElementById('formResult').style.display = 'block';
+  }
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
